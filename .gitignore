@@ -1,0 +1,8 @@
+.vscode/
+config/
+fonts/
+img/
+tweets/
+*.log
+*.json
+*.REMOVE_ME
