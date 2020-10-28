@@ -202,7 +202,7 @@ if __name__ == "__main__":
     rmg.save(
         f"C:/Users/Lenovo/Documents/insta-bot/tweets/{tweetToDisplay.id}.jpg", "JPEG")
 
-    rmg.show()
+    # rmg.show()
 
     bot = Bot()
 
