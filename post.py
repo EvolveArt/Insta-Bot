@@ -5,7 +5,9 @@ import json
 import sys
 import geocoder
 import random
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageEnhance
+import requests
+from io import BytesIO
 
 # API Keys and Tokens
 consumer_key = os.environ['API_KEY']
@@ -149,7 +151,26 @@ if __name__ == "__main__":
 
     text = tweetToDisplay.full_text
 
-    image = Image.new('RGB', (width, height), colorBackground)
+    image = None
+
+    # If the tweet has an image attached to it
+    if 'media' in tweetToDisplay.entities:
+        for _img in tweetToDisplay.entities['media']:
+            # Get the image, blur and darken it
+            response = requests.get(_img['media_url'])
+            image = Image.open(BytesIO(response.content))
+
+            image = image.filter(ImageFilter.BLUR)
+
+            enhancer = ImageEnhance.Brightness(image)
+            image = enhancer.enhance(0.5)
+
+            # Change the text color to white
+            colorText = "white"
+            break
+    else:
+        # Else just get a white square
+        image = Image.new('RGB', (width, height), colorBackground)
 
     # Resize the image
 
@@ -166,19 +187,26 @@ if __name__ == "__main__":
     # Create draw object
     draw = ImageDraw.Draw(rmg)
     # Draw text on image
-    color = 'rgb(0,0,0)'  # Black color
     y = 10
     for line in lines:
         # w, h = draw.textsize(line, font=font)
-        draw.text((50, 50+y), line, fill=color, font=font)
+        draw.text((50, 50+y), line, fill=colorText, font=font)
         y = y + line_height  # update y-axis for new line
+
+    # Add the author to the bottom right of the image
+    author_name = f"@{tweetToDisplay.author.screen_name}"
+    w, h = draw.textsize(author_name, font=font)
+    draw.text((width-w - 30, height-h - 30),
+              author_name, fill=colorText, font=font)
 
     rmg.save(
         f"C:/Users/Lenovo/Documents/insta-bot/tweets/{tweetToDisplay.id}.jpg", "JPEG")
 
-    bot = Bot()
+    rmg.show()
 
-    bot.login(username=os.environ['INSTA_USER'],
-              password=os.environ['INSTA_PASS'])
-    bot.upload_photo(f"C:/Users/Lenovo/Documents/insta-bot/tweets/{tweetToDisplay.id}.jpg",
-                     caption="Suivez nous pour plus de tweets ! @francetoptweet #twitter #trends #toptweets")
+    # bot = Bot()
+
+    # bot.login(username=os.environ['INSTA_USER'],
+    #           password=os.environ['INSTA_PASS'])
+    # bot.upload_photo(f"C:/Users/Lenovo/Documents/insta-bot/tweets/{tweetToDisplay.id}.jpg",
+    #                  caption="Suivez nous pour plus de tweets ! @francetoptweet #twitter #trends #toptweets")
