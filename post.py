@@ -204,9 +204,9 @@ if __name__ == "__main__":
 
     rmg.show()
 
-    # bot = Bot()
+    bot = Bot()
 
-    # bot.login(username=os.environ['INSTA_USER'],
-    #           password=os.environ['INSTA_PASS'])
-    # bot.upload_photo(f"C:/Users/Lenovo/Documents/insta-bot/tweets/{tweetToDisplay.id}.jpg",
-    #                  caption="Suivez nous pour plus de tweets ! @francetoptweet #twitter #trends #toptweets")
+    bot.login(username=os.environ['INSTA_USER'],
+              password=os.environ['INSTA_PASS'])
+    bot.upload_photo(f"C:/Users/Lenovo/Documents/insta-bot/tweets/{tweetToDisplay.id}.jpg",
+                     caption="Suivez nous pour plus de tweets ! @francetoptweet #twitter #trends #toptweets")
