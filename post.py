@@ -67,9 +67,11 @@ class TweetTrendsAnalyzer(object):
 
         print(f"Trend : {random_trend['name']}")
 
+        query = random_trend['query']
+
         # Get the tweets related to the trend chosen
-        tweets = api.search(random_trend['query'], result_type="popular",
-                            tweet_mode="extended", include_entities=True, count=100, lang='fr')
+        tweets = tweepy.Cursor(api.search, q=query, result_type="popular",
+                               tweet_mode="extended", include_entities=True, count=100, lang='fr').items()
 
         for tweet in tweets:
             if self.containsLink(tweet):
